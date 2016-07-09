@@ -92,8 +92,8 @@ end
 def user_input(releases)
   puts 'What month do you want to see releases for?'
   puts "Enter '1' for January, '2' for February, etc."
-  input = gets.chomp.to_i
-  old_print_releases(releases, input)
+  month = gets.chomp.to_i
+  old_print_releases(releases, month)
 end
 
 
