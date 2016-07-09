@@ -17,9 +17,9 @@ describe 'all_comics' do
   end
 end
 
-describe 'single_issues_only' do
+describe 'single_issues_only_filter' do
   it 'returns a hash' do
-    expect(single_issues_only_filter(comics)to be_a_kind_of(Hash))
+    expect(single_issues_only_filter(comics).to be_a_kind_of(Hash))
   end
 
   it 'is not empty an empty list' do
