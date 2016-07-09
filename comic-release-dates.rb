@@ -8,8 +8,22 @@ COMIC_NAME = 'p.book__headline'
 RELEASE_DATE = 'p.book__text'
 
 
-# helper function to format release date as Date obj
-def format_date_obj(calendar, title, date)
+# create a list of comics and their release dates
+def all_comics(pages)
+  comics = {}
+  pages.each do |series|
+    issues = series.css(COMIC_NAME)
+    release_dates = series.css(RELEASE_DATE)
+    issues.each_with_index do |title, index|
+      format_date_obj(comics, title, release_dates[index])
+    end
+  end
+  return comics
+end
+
+
+# format release dates as date objects
+def format_date_obj(comics, title, date)
   month = 0
   day = 0
   year = 0
@@ -21,58 +35,7 @@ def format_date_obj(calendar, title, date)
   month += MONTH_AS_INT[split_date[0]]
   day += split_date[1].to_i
   year += split_date[2].to_i
-  calendar[title.text] = Date.new(year, month, day)
-end
-
-
-# helper function to format release date for print view
-def format_date_print_view(date)
-  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n\n"
-end
-
-
-# pull info from pages and store in list
-def record_releases(pages)
-  releases = {}
-  pages.each do |series|
-    issues = series.css(COMIC_NAME)
-    release_dates = series.css(RELEASE_DATE)
-    issues.each_with_index do |title, index|
-      format_date_obj(releases, title, release_dates[index])
-    end
-  end
-  return releases
-end
-
-
-# print all comics for a specific series
-def list_all(series)
-
-end
-
-
-# old method to print releases
-def old_print_releases(calendar, month)
-  calendar.each do |title, release_date|
-    if release_date.mon == month && release_date.year >= Time.now.to_date.year
-      print "#{title}\n"
-      format_date_print_view(release_date)
-    end
-  end
-end
-
-
-# collect releases by month
-def monthly_releases(calendar, month)
-  monthly_releases = {}
-  calendar.each do |title, release_date|
-    if release_date.mon == month && release_date.year >= Time.now.to_date.year
-      monthly_releases[title] = release_date
-      print "#{title}\n"
-      format_date_print_view(release_date)
-    end
-  end
-  return monthly_releases
+  comics[title.text] = Date.new(year, month, day)
 end
 
 
@@ -82,9 +45,32 @@ def sort_by_date(comics)
 end
 
 
-# print new issues by release date
-def print_list(comics)
+# calculate cost
+def total_cost(num_comics)
+  subtotal = num_comics * 2.99
+  tax = num_comics * 0.52
+  total = subtotal + tax
+  total.round(2)
+end
 
+
+# print comics and release dates
+def old_print_releases(comics, month)
+  num_comics = 0
+  comics.each do |title, release_date|
+    if release_date.mon == month && release_date.year >= Time.now.to_date.year
+      print "#{title}\n"
+      format_date_print_view(release_date)
+      num_comics += 1
+    end
+  end
+  puts "That'll set ya back $#{total_cost(num_comics)}"
+end
+
+
+# format release date for print view
+def format_date_print_view(date)
+  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n\n"
 end
 
 
@@ -94,9 +80,6 @@ def user_input(releases)
   puts "Enter '1' for January, '2' for February, etc."
   input = gets.chomp.to_i
   old_print_releases(releases, input)
-  # comics = monthly_releases(releases, input)
-  # sorted_comics = sort_by_date(comics)
-  # print_list(sorted_comics)
 end
 
 
@@ -106,5 +89,5 @@ end
 
 
 # driver code
-releases = record_releases(PAGES)
+releases = all_comics(PAGES)
 user_input(releases)
