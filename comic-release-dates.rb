@@ -1,24 +1,11 @@
-require 'nokogiri'
-require 'open-uri'
 require 'date'
-# stores month conversion hashes
 require_relative 'month_conv'
+require_relative 'nokogiri-objects'
 
 
 # class names for locating info while scraping
 COMIC_NAME = 'p.book__headline'
 RELEASE_DATE = 'p.book__text'
-
-
-# storing pages as Nokogiri objects, then creating a list out of them
-AUTUMNLANDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/tooth-and-claw'))
-DESCENDER = Nokogiri::HTML(open('https://imagecomics.com/comics/series/descender'))
-GODDAMNED = Nokogiri::HTML(open('https://imagecomics.com/comics/series/the-goddamned'))
-INJECTION = Nokogiri::HTML(open('https://imagecomics.com/comics/series/injection'))
-PAPER_GIRLS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/paper-girls'))
-SAGA = Nokogiri::HTML(open('https://imagecomics.com/comics/series/saga'))
-SOUTHERN_BASTARDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/southern-bastards'))
-PAGES = [AUTUMNLANDS, DESCENDER, GODDAMNED, INJECTION, PAPER_GIRLS, SAGA, SOUTHERN_BASTARDS]
 
 
 # helper function to format release date as Date obj
@@ -104,6 +91,7 @@ end
 # user input sets which month to show releases for
 def user_input(releases)
   puts 'What month do you want to see releases for?'
+  puts "Enter '1' for January, '2' for February, etc."
   input = gets.chomp.to_i
   old_print_releases(releases, input)
   # comics = monthly_releases(releases, input)
