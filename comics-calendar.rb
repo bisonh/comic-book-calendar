@@ -26,8 +26,10 @@ end
 def single_issues_only_filter(comics)
   single_issues = {}
   comics.each do |title, release_date|
-    if !title.downcase.include?('vol') && !title.include?(':')
-      single_issues[title] = release_date
+    if title.include?('#')
+      if !title.downcase.include?('vol') && !title.include?(':')
+        single_issues[title] = release_date
+      end
     end
   end
   return single_issues
@@ -102,4 +104,9 @@ end
 
 # driver code
 releases = all_comics(PAGES)
+
+# releases.each do |title, release_date|
+#   p title.class
+#   p release_date
+# end
 user_input(releases)
