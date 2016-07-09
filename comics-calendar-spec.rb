@@ -1,4 +1,4 @@
-require_relative 'comic-release-dates'
+require_relative 'comics-calendar'
 
 saga = Nokogiri::HTML(open('https://imagecomics.com/comics/series/saga'))
 paper_girls = Nokogiri::HTML(open('https://imagecomics.com/comics/series/paper-girls'))

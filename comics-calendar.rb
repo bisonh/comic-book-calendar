@@ -9,9 +9,9 @@ RELEASE_DATE = 'p.book__text'
 
 
 # create a list of comics and their release dates
-def all_comics(pages)
+def all_comics(noko_objs)
   comics = {}
-  pages.each do |series|
+  noko_objs.each do |series|
     issues = series.css(COMIC_NAME)
     release_dates = series.css(RELEASE_DATE)
     issues.each_with_index do |title, index|
@@ -19,6 +19,12 @@ def all_comics(pages)
     end
   end
   return comics
+end
+
+
+# remove traders and special edition sets
+def single_issues_only(comics)
+
 end
 
 
