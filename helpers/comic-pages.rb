@@ -5,15 +5,17 @@ require 'open-uri'
 # scraped HTML from individual series pages
 AUTUMNLANDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/tooth-and-claw'))
 DESCENDER = Nokogiri::HTML(open('https://imagecomics.com/comics/series/descender'))
-GODDAMNED = Nokogiri::HTML(open('https://imagecomics.com/comics/series/the-goddamned'))
-INJECTION = Nokogiri::HTML(open('https://imagecomics.com/comics/series/injection'))
-PAPER_GIRLS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/paper-girls'))
-SAGA = Nokogiri::HTML(open('https://imagecomics.com/comics/series/saga'))
-SOUTHERN_BASTARDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/southern-bastards'))
+# GODDAMNED = Nokogiri::HTML(open('https://imagecomics.com/comics/series/the-goddamned'))
+# INJECTION = Nokogiri::HTML(open('https://imagecomics.com/comics/series/injection'))
+# PAPER_GIRLS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/paper-girls'))
+# SAGA = Nokogiri::HTML(open('https://imagecomics.com/comics/series/saga'))
+# SOUTHERN_BASTARDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/southern-bastards'))
+# TREES = Nokogiri::HTML(open('https://imagecomics.com/comics/series/trees'))
 
 
 # collection of scraped pages
-PAGES = [AUTUMNLANDS, DESCENDER, GODDAMNED, INJECTION, PAPER_GIRLS, SAGA, SOUTHERN_BASTARDS]
+# PAGES = [AUTUMNLANDS, DESCENDER, GODDAMNED, INJECTION, PAPER_GIRLS, SAGA, SOUTHERN_BASTARDS, TREES]
+TESTER_PAGES = [AUTUMNLANDS, DESCENDER]
 
 
 # class names for locating info while scraping
