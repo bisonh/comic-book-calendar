@@ -68,11 +68,9 @@ def format_release_dates_as_date_objects(comics)
     day = 0
     year = 0
     month += MONTH_AS_INT[split_date[0]]
-    # p month
     day += remove_commas(split_date[1]).to_i
     year += split_date[2].to_i
     release_date = Date.new(year, month, day)
-    p release_date.class
     formatted_comics_list[title] = release_date
   end
   return formatted_comics_list
@@ -235,6 +233,7 @@ def create_calendar(pages)
   my_list = parse_comics_and_release_dates(pages)
   single_issues_list = filter_out_collections(my_list)
   filtered_release_dates = filter_out_heading_from_release_dates(single_issues_list)
+  formatted_dates = format_release_dates_as_date_objects(filtered_release_dates)
   pretty_print(filtered_release_dates)
 end
 
