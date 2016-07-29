@@ -2,30 +2,11 @@ require 'date'
 require 'nokogiri'
 require 'open-uri'
 require_relative './helpers/month_conv'
-# require_relative './helpers/nokogiri-objects'
-
-
-# scraped HTML documents
-AUTUMNLANDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/tooth-and-claw'))
-DESCENDER = Nokogiri::HTML(open('https://imagecomics.com/comics/series/descender'))
-GODDAMNED = Nokogiri::HTML(open('https://imagecomics.com/comics/series/the-goddamned'))
-INJECTION = Nokogiri::HTML(open('https://imagecomics.com/comics/series/injection'))
-PAPER_GIRLS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/paper-girls'))
-SAGA = Nokogiri::HTML(open('https://imagecomics.com/comics/series/saga'))
-SOUTHERN_BASTARDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/southern-bastards'))
-
-
-# collection of scraped data
-PAGES = [AUTUMNLANDS, DESCENDER, GODDAMNED, INJECTION, PAPER_GIRLS, SAGA, SOUTHERN_BASTARDS]
-
-
-# class names for locating info while scraping
-COMIC_NAME_NODE = 'p.book__headline'
-RELEASE_DATE_NODE = 'p.book__text'
+require_relative './helpers/comic-pages'
 
 
 # creates a hash of comic issues and their release dates
-def comics_and_release_dates(series_pages)
+def parse_comics_and_release_dates(series_pages)
   comics = {}
   series_pages.each do |page|
     titles = page.css('p.book__headline')
@@ -35,19 +16,6 @@ def comics_and_release_dates(series_pages)
     end
   end
   return comics
-end
-
-
-# offline mode works without scraping
-def all_comics_offline(comics_list)
-  comics = {}
-  comics_list.each do |title, date|
-    comics[title] = date
-    # issues.each_with_index do |title, index|
-    #   format_date_obj(comics, title, release_dates[index])
-    # end
-  end
-  return single_issues_only_filter(comics)
 end
 
 
@@ -244,7 +212,7 @@ end
 
 
 # Driver code
-my_list = comics_and_release_dates(PAGES)
+my_list = parse_comics_and_release_dates(PAGES)
 my_formatted_list = filter_out_collections(my_list)
 # p my_formatted_list
 pretty_print(my_formatted_list)
