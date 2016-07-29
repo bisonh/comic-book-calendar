@@ -10,10 +10,11 @@ INJECTION = Nokogiri::HTML(open('https://imagecomics.com/comics/series/injection
 PAPER_GIRLS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/paper-girls'))
 SAGA = Nokogiri::HTML(open('https://imagecomics.com/comics/series/saga'))
 SOUTHERN_BASTARDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/southern-bastards'))
+TREES = Nokogiri::HTML(open('https://imagecomics.com/comics/series/trees'))
 
 
 # collection of scraped pages
-PAGES = [AUTUMNLANDS, DESCENDER, GODDAMNED, INJECTION, PAPER_GIRLS, SAGA, SOUTHERN_BASTARDS]
+PAGES = [AUTUMNLANDS, DESCENDER, GODDAMNED, INJECTION, PAPER_GIRLS, SAGA, SOUTHERN_BASTARDS, TREES]
 
 
 # class names for locating info while scraping
