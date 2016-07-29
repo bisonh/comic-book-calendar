@@ -6,7 +6,7 @@ require_relative './helpers/comic-pages'
 
 
 # creates a hash of comic issues and their release dates
-def parse_comics_and_release_dates(series_pages)
+def get_titles_and_dates(series_pages)
   comics = {}
   series_pages.each do |page|
     titles = page.css('p.book__headline')
@@ -20,7 +20,7 @@ end
 
 
 # filter out volumes and special editions
-def filter_out_collections(comics)
+def remove_collections(comics)
   single_issues = {}
   comics.each do |title, release_date|
     if title.include?('#') && !title.include?('free #1')
@@ -33,23 +33,12 @@ def filter_out_collections(comics)
 end
 
 
-# filter out 'published' from release dates
-def filter_out_heading_from_release_dates(comics)
+# format release dates as date objects
+def format_release_dates(comics)
   list = {}
   comics.each do |title, release_date|
     split_date = release_date.split
     split_date.shift
-    list[title] = split_date.join(' ')
-  end
-  return list
-end
-
-
-# formatting helper to set release dates as date objects
-def format_release_dates_as_date_objects(comics)
-  formatted_comics_list = {}
-  comics.each do |title, release_date|
-    split_date = release_date.split
     month = 0
     day = 0
     year = 0
@@ -57,9 +46,10 @@ def format_release_dates_as_date_objects(comics)
     day += split_date[1].delete(',').to_i
     year += split_date[2].to_i
     release_date = Date.new(year, month, day)
-    formatted_comics_list[title] = release_date
+    # formatted_comics_list[title] = release_date
+    list[title] = release_date
   end
-  return formatted_comics_list
+  return list
 end
 
 
@@ -79,6 +69,12 @@ def sort_by_date(comics)
 end
 
 
+# format release date for print view
+def format_date_print_view(date)
+  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n"
+end
+
+
 # calculate cost
 def total_cost(num_comics)
   subtotal = num_comics * 2.99
@@ -88,7 +84,7 @@ end
 
 
 # print comics and release dates
-def old_print_releases(comics, month)
+def print_releases(comics, month)
   num_comics = 0
   comics.each do |title, release_date|
     if release_date.mon == month && release_date.year >= Time.now.to_date.year
@@ -116,27 +112,17 @@ def user_input(comics)
       input.downcase!
     else
       input = input.to_i
-      old_print_releases(comics, input)
+      print_releases(comics, input)
     end
   end
 end
 
 
-#### the code below here needs to be organized so pretty_print registers with user_input #####
-
-# format release date for print view
-def format_date_print_view(date)
-  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n"
-end
-
-
 # wrapper method to call all other methods
 def create_calendar(pages)
-  my_list = parse_comics_and_release_dates(pages)
-  single_issues_list = filter_out_collections(my_list)
-  filtered_release_dates = filter_out_heading_from_release_dates(single_issues_list)
-  formatted_dates = format_release_dates_as_date_objects(filtered_release_dates)
-  # pretty_print(filtered_release_dates)
+  my_list = get_titles_and_dates(pages)
+  single_issues_list = remove_collections(my_list)
+  formatted_dates = format_release_dates(single_issues_list)
   user_input(formatted_dates)
 end
 
