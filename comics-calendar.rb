@@ -46,7 +46,6 @@ def format_release_dates(comics)
     day += split_date[1].delete(',').to_i
     year += split_date[2].to_i
     release_date = Date.new(year, month, day)
-    # formatted_comics_list[title] = release_date
     list[title] = release_date
   end
   return list
@@ -55,22 +54,17 @@ end
 
 # sort releases by date
 def sort_by_date(comics)
-  # new list variable
-  # comparison new date at first of month
-  # iterate through comics list
-    # IF release date is less than comparison
-      # comparison becomes key
-      # value is an an empty array
-      # push title onto array
-    # ELSIF release date is equal to comparison
-      # push title onto array
-    # ELSE
-      #
+# input: hash, keys are strings and values are date objects
+# steps:
+  # new empty list
+
+# output: hash, keys are strings sorted by and representing date object, values are an array of strings
+# example: {}
 end
 
 
 # format release date for print view
-def format_date_print_view(date)
+def month_as_roman(date)
   puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n"
 end
 
@@ -88,7 +82,7 @@ def print_releases(comics, month)
   num_comics = 0
   comics.each do |title, release_date|
     if release_date.mon == month && release_date.year >= Time.now.to_date.year
-      format_date_print_view(release_date)
+      month_as_roman(release_date)
       puts "#{title}\n\n"
       num_comics += 1
     end
