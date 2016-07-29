@@ -33,17 +33,46 @@ def filter_out_collections(comics)
 end
 
 
-# formatting helper to set release dates as date objects
-def format_date_obj(comics)
-  formatted_comics_list = {}
+# filter out 'published' from release dates
+def filter_out_heading_from_release_dates(comics)
+  list = {}
   comics.each do |title, release_date|
+    split_date = release_date.split
+    split_date.shift
+    list[title] = split_date.join(' ')
+  end
+  return list
+end
+
+
+# helper function to remove commas from dates
+# def remove_commas(comics)
+def remove_commas(date)
+  date.delete(',')
+  return date
+  # comics_formatted_date = {}
+  # comics.each do |title, date|
+  #   comics_formatted_date[title] = date.delete(',')
+  # end
+  # return comics_formatted_date
+end
+
+
+# formatting helper to set release dates as date objects
+def format_release_dates_as_date_objects(comics)
+  formatted_comics_list = {}
+  # p comics
+  comics.each do |title, release_date|
+    split_date = release_date.split
     month = 0
     day = 0
     year = 0
-    month += MONTH_AS_INT[release_date[0]]
-    day += release_date[1].to_i
-    year += release_date[2].to_i
+    month += MONTH_AS_INT[split_date[0]]
+    # p month
+    day += remove_commas(split_date[1]).to_i
+    year += split_date[2].to_i
     release_date = Date.new(year, month, day)
+    p release_date.class
     formatted_comics_list[title] = release_date
   end
   return formatted_comics_list
@@ -94,14 +123,7 @@ def old_format_date_obj(calendar, title, date)
 end
 
 
-# helper function to remove commas from dates
-def remove_commas(comics)
-  comics_formatted_date = {}
-  comics.each do |title, date|
-    comics_formatted_date[title] = date.delete(',')
-  end
-  return comics_formatted_date
-end
+
 
 
 # split dates
@@ -209,12 +231,14 @@ end
 # p total_cost(1) == 3.51
 # p total_cost(5) == 17.55
 
+def create_calendar(pages)
+  my_list = parse_comics_and_release_dates(pages)
+  single_issues_list = filter_out_collections(my_list)
+  filtered_release_dates = filter_out_heading_from_release_dates(single_issues_list)
+  pretty_print(filtered_release_dates)
+end
 
 
 # Driver code
-my_list = parse_comics_and_release_dates(PAGES)
-my_formatted_list = filter_out_collections(my_list)
-# p my_formatted_list
-pretty_print(my_formatted_list)
-# p my_list
-# p my_list.count
+# create_calendar(PAGES)
+create_calendar(TESTER_PAGES)
