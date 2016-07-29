@@ -45,19 +45,6 @@ def filter_out_heading_from_release_dates(comics)
 end
 
 
-# helper function to remove commas from dates
-# def remove_commas(comics)
-def remove_commas(date)
-  date.delete(',')
-  return date
-  # comics_formatted_date = {}
-  # comics.each do |title, date|
-  #   comics_formatted_date[title] = date.delete(',')
-  # end
-  # return comics_formatted_date
-end
-
-
 # formatting helper to set release dates as date objects
 def format_release_dates_as_date_objects(comics)
   formatted_comics_list = {}
@@ -68,60 +55,13 @@ def format_release_dates_as_date_objects(comics)
     day = 0
     year = 0
     month += MONTH_AS_INT[split_date[0]]
-    day += remove_commas(split_date[1]).to_i
+    day += split_date[1].delete(',').to_i
     year += split_date[2].to_i
     release_date = Date.new(year, month, day)
     formatted_comics_list[title] = release_date
   end
   return formatted_comics_list
-
-  # month = 0
-  # day = 0
-  # year = 0
-  # comics.each_value do |date|
-  #   split_date = date.text.split(' ')
-  # end
-  # split_date = comics.date.text.split(' ')
-  # if split_date.include?('Published:')
-  #   split_date.shift
-  # end
-
-  # month += MONTH_AS_INT[split_date[0]]
-  # day += split_date[1].to_i
-  # year += split_date[2].to_i
-  # comics[title.text] = Date.new(year, month, day)
 end
-
-def format_date_obj_offline(comics)
-  formatted_comics_list = {}
-  comics.each do |title, release_date|
-    month = 0
-    day = 0
-    year = 0
-    month += MONTH_AS_INT[release_date[0]]
-    day += release_date[1].to_i
-    year += release_date[2].to_i
-    release_date = Date.new(year, month, day)
-    formatted_comics_list[title] = release_date
-  end
-  return formatted_comics_list
-end
-
-
-def old_format_date_obj(calendar, title, date)
-  month = 0
-  day = 0
-  year = 0
-  split_date = date.text.split(' ')
-  # p split_date
-  # month += MONTH_AS_INT[split_date[0]]
-  # day += split_date[1].to_i
-  # year += split_date[2].to_i
-  # calendar[title.text] = Date.new(year, month, day)
-end
-
-
-
 
 
 # split dates
