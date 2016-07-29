@@ -1,23 +1,42 @@
 require 'date'
+require 'nokogiri'
+require 'open-uri'
 require_relative './helpers/month_conv'
 # require_relative './helpers/nokogiri-objects'
 
 
+# scraped HTML documents
+AUTUMNLANDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/tooth-and-claw'))
+DESCENDER = Nokogiri::HTML(open('https://imagecomics.com/comics/series/descender'))
+GODDAMNED = Nokogiri::HTML(open('https://imagecomics.com/comics/series/the-goddamned'))
+INJECTION = Nokogiri::HTML(open('https://imagecomics.com/comics/series/injection'))
+PAPER_GIRLS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/paper-girls'))
+SAGA = Nokogiri::HTML(open('https://imagecomics.com/comics/series/saga'))
+SOUTHERN_BASTARDS = Nokogiri::HTML(open('https://imagecomics.com/comics/series/southern-bastards'))
+
+
+# collection of scraped data
+PAGES = [AUTUMNLANDS, DESCENDER, GODDAMNED, INJECTION, PAPER_GIRLS, SAGA, SOUTHERN_BASTARDS]
+
+
 # class names for locating info while scraping
-COMIC_NAME = 'p.book__headline'
-RELEASE_DATE = 'p.book__text'
+COMIC_NAME_NODE = 'p.book__headline'
+RELEASE_DATE_NODE = 'p.book__text'
 
 
-# returns a hash of comics and their release dates
-def all_comics(noko_objs)
+# creates a hash of comic issues and their release dates
+def comics_and_release_dates(series_pages)
   comics = {}
-  noko_objs.each do |series|
-    issues = series.css(COMIC_NAME)
-    release_dates = series.css(RELEASE_DATE)
-    comics[issues] = release_dates
+  series_pages.each do |page|
+    titles = page.css('p.book__headline')
+    release_dates = page.css('p.book__text')
+    titles.each_with_index do |title, index|
+      comics[title.text] = release_dates[index].text
+    end
   end
   return comics
 end
+
 
 # offline mode works without scraping
 def all_comics_offline(comics_list)
@@ -32,8 +51,8 @@ def all_comics_offline(comics_list)
 end
 
 
-# remove collected issues and special edition sets
-def single_issues_only_filter(comics)
+# filter out volumes and special editions
+def filter_out_collections(comics)
   single_issues = {}
   comics.each do |title, release_date|
     if title.include?('#')
@@ -42,12 +61,12 @@ def single_issues_only_filter(comics)
       end
     end
   end
-  single_issues
+  return single_issues
 end
 
 
 # formatting helper to set release dates as date objects
-def format_date_obj(comics, title, date)
+def format_date_obj(comics)
   formatted_comics_list = {}
   comics.each do |title, release_date|
     month = 0
@@ -91,6 +110,19 @@ def format_date_obj_offline(comics)
     formatted_comics_list[title] = release_date
   end
   return formatted_comics_list
+end
+
+
+def old_format_date_obj(calendar, title, date)
+  month = 0
+  day = 0
+  year = 0
+  split_date = date.text.split(' ')
+  # p split_date
+  # month += MONTH_AS_INT[split_date[0]]
+  # day += split_date[1].to_i
+  # year += split_date[2].to_i
+  # calendar[title.text] = Date.new(year, month, day)
 end
 
 
@@ -169,13 +201,26 @@ end
 
 # get calendar offline
 def calendar(comics)
-  comics_list = all_comics_offline(comics)
-  comics_list_filtered = single_issues_only_filter(comics_list)
-  comics_list_without_commas = remove_commas(comics_list_filtered)
-  comics_list_split_date = date_splitter(comics_list_without_commas)
-  formatted_list = format_date_obj_offline(comics_list_split_date)
+  # comics_list = all_comics_offline(comics)
+
+  comics_list = all_comics(comics)
+  # comics_list_filtered = single_issues_only_filter(comics_list)
+  # comics_list_without_commas = remove_commas(comics_list_filtered)
+  # comics_list_split_date = date_splitter(comics_list_without_commas)
+
+  # formatted_list = format_date_obj_offline(comics_list_split_date)
+
+  # formatted_list = format_date_obj(comics_list_split_date)
 
   # user_input
+end
+
+
+# format console output
+def pretty_print(comics)
+  comics.each do |comic, release_date|
+    puts "#{comic}\n#{release_date}\n\n"
+  end
 end
 
 
@@ -186,12 +231,22 @@ end
 
 
 # offline driver code
-series_list = {'Sweet Tooth Vol. 1' => 'January 2, 2016', 'Sweet Tooth #1' => 'January 5, 2015', 'Sweet Tooth #2' => 'January 17, 2016', 'Sweet Tooth: The First Collection' => 'January 2, 2016'}
+# series_list = {'Sweet Tooth Vol. 1' => 'January 2, 2016', 'Sweet Tooth #1' => 'January 5, 2015', 'Sweet Tooth #2' => 'January 17, 2016', 'Sweet Tooth: The First Collection' => 'January 2, 2016'}
 
-comics = calendar(series_list)
-p comics
+# comics = calendar(comic_documents)
+# p comics
 
 
 # p total_cost(0) == 0
 # p total_cost(1) == 3.51
 # p total_cost(5) == 17.55
+
+
+
+# Driver code
+my_list = comics_and_release_dates(PAGES)
+my_formatted_list = filter_out_collections(my_list)
+# p my_formatted_list
+pretty_print(my_formatted_list)
+# p my_list
+# p my_list.count
