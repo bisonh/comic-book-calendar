@@ -92,22 +92,33 @@ def old_print_releases(comics, month)
   num_comics = 0
   comics.each do |title, release_date|
     if release_date.mon == month && release_date.year >= Time.now.to_date.year
-      print "#{title}\n"
       format_date_print_view(release_date)
+      puts "#{title}\n\n"
       num_comics += 1
     end
   end
-  puts "That'll set ya back $#{total_cost(num_comics)}"
+  puts "That'll set ya back $#{total_cost(num_comics)}\n\n"
+  puts "-" * 40
+  puts
 end
 
 
 # user input sets which month to show releases for
 # should figure out how to loop this so several months can be seen at once
 def user_input(comics)
-  puts 'What month do you want to see comics for?'
-  puts "Enter '1' for January, '2' for February, etc."
-  month = gets.chomp.to_i
-  old_print_releases(comics, month)
+  input = ""
+  while input != 'exit'
+    puts 'What month do you want to see comics for?'
+    puts "Enter '1' for January, '2' for February, etc."
+    puts "Type 'exit' to exit program."
+    input = gets.chomp
+    if input == 'exit'
+      input.downcase!
+    else
+      input = input.to_i
+      old_print_releases(comics, input)
+    end
+  end
 end
 
 
@@ -115,15 +126,7 @@ end
 
 # format release date for print view
 def format_date_print_view(date)
-  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n\n"
-end
-
-
-# format console output
-def pretty_print(comics)
-  comics.each do |title, release_date|
-    puts "#{release_date}\n#{title}\n\n"
-  end
+  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n"
 end
 
 
@@ -139,5 +142,4 @@ end
 
 
 # Driver code
-# create_calendar(PAGES)
-create_calendar(TESTER_PAGES)
+create_calendar(PAGES)
