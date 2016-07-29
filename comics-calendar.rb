@@ -23,7 +23,7 @@ end
 def filter_out_collections(comics)
   single_issues = {}
   comics.each do |title, release_date|
-    if title.include?('#')
+    if title.include?('#') && !title.include?('free #1')
       if !title.downcase.include?('vol') && !title.include?(':')
         single_issues[title] = release_date
       end
@@ -48,7 +48,6 @@ end
 # formatting helper to set release dates as date objects
 def format_release_dates_as_date_objects(comics)
   formatted_comics_list = {}
-  # p comics
   comics.each do |title, release_date|
     split_date = release_date.split
     month = 0
@@ -61,16 +60,6 @@ def format_release_dates_as_date_objects(comics)
     formatted_comics_list[title] = release_date
   end
   return formatted_comics_list
-end
-
-
-# split dates
-def date_splitter(comics)
-  comics_split_date = {}
-  comics.each do |title, date|
-    comics_split_date[title] = date.split
-  end
-  return comics_split_date
 end
 
 
@@ -112,13 +101,8 @@ def old_print_releases(comics, month)
 end
 
 
-# format release date for print view
-def format_date_print_view(date)
-  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n\n"
-end
-
-
 # user input sets which month to show releases for
+# should figure out how to loop this so several months can be seen at once
 def user_input(comics)
   puts 'What month do you want to see comics for?'
   puts "Enter '1' for January, '2' for February, etc."
@@ -127,54 +111,30 @@ def user_input(comics)
 end
 
 
-# get calendar offline
-def calendar(comics)
-  # comics_list = all_comics_offline(comics)
+#### the code below here needs to be organized so pretty_print registers with user_input #####
 
-  comics_list = all_comics(comics)
-  # comics_list_filtered = single_issues_only_filter(comics_list)
-  # comics_list_without_commas = remove_commas(comics_list_filtered)
-  # comics_list_split_date = date_splitter(comics_list_without_commas)
-
-  # formatted_list = format_date_obj_offline(comics_list_split_date)
-
-  # formatted_list = format_date_obj(comics_list_split_date)
-
-  # user_input
+# format release date for print view
+def format_date_print_view(date)
+  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n\n"
 end
 
 
 # format console output
 def pretty_print(comics)
-  comics.each do |comic, release_date|
-    puts "#{comic}\n#{release_date}\n\n"
+  comics.each do |title, release_date|
+    puts "#{release_date}\n#{title}\n\n"
   end
 end
 
 
-# scaping driver code
-# releases = all_comics(PAGES)
-# user_input(releases)
-
-
-
-# offline driver code
-# series_list = {'Sweet Tooth Vol. 1' => 'January 2, 2016', 'Sweet Tooth #1' => 'January 5, 2015', 'Sweet Tooth #2' => 'January 17, 2016', 'Sweet Tooth: The First Collection' => 'January 2, 2016'}
-
-# comics = calendar(comic_documents)
-# p comics
-
-
-# p total_cost(0) == 0
-# p total_cost(1) == 3.51
-# p total_cost(5) == 17.55
-
+# wrapper method to call all other methods
 def create_calendar(pages)
   my_list = parse_comics_and_release_dates(pages)
   single_issues_list = filter_out_collections(my_list)
   filtered_release_dates = filter_out_heading_from_release_dates(single_issues_list)
   formatted_dates = format_release_dates_as_date_objects(filtered_release_dates)
-  pretty_print(filtered_release_dates)
+  # pretty_print(filtered_release_dates)
+  user_input(formatted_dates)
 end
 
 
