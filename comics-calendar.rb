@@ -3,33 +3,21 @@ require 'nokogiri'
 require 'open-uri'
 require_relative './helpers/month_conv'
 require_relative './helpers/comic-pages'
+require_relative './helpers/helpers'
 
 
 # creates a hash of comic issues and their release dates
+# output: { "saga #30" => "January 8, 2016" }
 def get_titles_and_dates(series_pages)
   comics = {}
   series_pages.each do |page|
     titles = page.css('p.book__headline')
     release_dates = page.css('p.book__text')
     titles.each_with_index do |title, index|
-      comics[title.text] = release_dates[index].text
+      comics[title.text] = remove_published(release_dates[index].text)
     end
   end
   return comics
-end
-
-
-# filter out volumes and special editions
-def remove_collections(comics)
-  single_issues = {}
-  comics.each do |title, release_date|
-    if title.include?('#') && !title.include?('free #1')
-      if !title.downcase.include?('vol') && !title.include?(':')
-        single_issues[title] = release_date
-      end
-    end
-  end
-  return single_issues
 end
 
 
@@ -38,7 +26,6 @@ def format_release_dates(comics)
   list = {}
   comics.each do |title, release_date|
     split_date = release_date.split
-    split_date.shift
     month = 0
     day = 0
     year = 0
@@ -94,7 +81,6 @@ end
 
 
 # user input sets which month to show releases for
-# should figure out how to loop this so several months can be seen at once
 def user_input(comics)
   input = ""
   while input != 'exit'
@@ -112,10 +98,19 @@ def user_input(comics)
 end
 
 
+def print_list(comics)
+  comics.each do |title, release_date|
+    puts "#{release_date}"
+    puts "#{title}\n\n"
+  end
+end
+
+
 # wrapper method to call all other methods
 def create_calendar(pages)
   my_list = get_titles_and_dates(pages)
   single_issues_list = remove_collections(my_list)
+  # print_list(single_issues_list)
   formatted_dates = format_release_dates(single_issues_list)
   user_input(formatted_dates)
 end
