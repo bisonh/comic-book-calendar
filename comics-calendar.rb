@@ -7,14 +7,26 @@ require_relative './helpers/helpers'
 
 
 # creates a hash of comic issues and their release dates
-# output: { "saga #30" => "January 8, 2016" }
+# output: { "Saga #30" => "January 8, 2016" }
+# desired output: { "January 8, 2016" => ["Saga #30"] }
 def get_titles_and_dates(series_pages)
   comics = {}
   series_pages.each do |page|
     titles = page.css('p.book__headline')
     release_dates = page.css('p.book__text')
     titles.each_with_index do |title, index|
-      comics[title.text] = remove_published(release_dates[index].text)
+
+      comic_title = title.text
+      release_date = remove_published(release_dates[index].text)
+      # p comic_title
+      # p release_date
+
+
+      if comics.has_key?(release_date)
+        comics[release_date].push(comic_title)
+      else
+        comics[release_date] = [comic_title]
+      end
     end
   end
   return comics
@@ -109,10 +121,12 @@ end
 # wrapper method to call all other methods
 def create_calendar(pages)
   my_list = get_titles_and_dates(pages)
-  single_issues_list = remove_collections(my_list)
-  # print_list(single_issues_list)
-  formatted_dates = format_release_dates(single_issues_list)
-  user_input(formatted_dates)
+  p my_list
+  # single_issues_list = remove_collections(my_list)
+  # p single_issues_list
+  # formatted_dates = format_release_dates(single_issues_list)
+  # print_list(formatted_dates)
+  # user_input(formatted_dates)
 end
 
 
