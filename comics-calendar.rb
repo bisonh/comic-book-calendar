@@ -16,7 +16,7 @@ def get_titles_and_dates(series_pages)
     titles.each_with_index do |title, index|
       comic_title = title.text
       if single_issue?(comic_title)
-        release_date = remove_published(release_dates[index].text)
+        release_date = format_release_date(remove_published(release_dates[index].text))
         if comics.has_key?(release_date)
           comics[release_date].push(comic_title)
         else
@@ -26,18 +26,6 @@ def get_titles_and_dates(series_pages)
     end
   end
   return comics
-end
-
-
-# sort releases by date
-def sort_by_date(comics)
-# input: hash, keys are strings and values are date objects
-# steps:
-  # new empty list
-
-# output: hash, keys are strings sorted by and representing date object, values are an array of strings
-# example: {}
-
 end
 
 
@@ -53,7 +41,8 @@ def user_input(comics)
       input.downcase!
     else
       input = input.to_i
-      print_releases(comics, input)
+      this_months_savers = selected_comics(comics, input)
+      print_releases(this_months_savers)
     end
   end
 end

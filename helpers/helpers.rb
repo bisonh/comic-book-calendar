@@ -35,19 +35,34 @@ def total_cost(num_comics)
 end
 
 
+# filter comics by month and sort by date
+def selected_comics(comics, month)
+  selected_comics = {}
+  comics.each do |release_date, titles|
+    if release_date.mon == month && release_date.year >= Time.now.to_date.year
+      selected_comics[release_date] = titles
+    end
+  end
+  selected_comics.sort.to_h
+end
+
+
+# format date object for print view
+def format_date_print_view(date)
+  print "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}"
+end
+
+
 # display comics and release dates in CLI
-def print_releases(comics, month)
+def print_releases(comics)
   num_comics = 0
   comics.each do |release_date, titles|
-    date_object = format_release_date(release_date)
-    if date_object.mon == month && date_object.year >= Time.now.to_date.year
-      puts release_date
-      titles.each do |title|
-        puts "#{title}"
-        num_comics += 1
-      end
-      puts
+    puts format_date_print_view(release_date)
+    titles.each do |title|
+      puts "#{title}"
+      num_comics += 1
     end
+    puts
   end
   puts "That'll set ya back $#{total_cost(num_comics)}\n\n"
   puts "-" * 40
