@@ -29,19 +29,6 @@ def get_titles_and_dates(series_pages)
 end
 
 
-# format release dates as date objects
-def format_release_date(date)
-  split_date = date.split
-  month = 0
-  day = 0
-  year = 0
-  month += MONTH_AS_INT[split_date[0]]
-  day += split_date[1].delete(',').to_i
-  year += split_date[2].to_i
-  Date.new(year, month, day)
-end
-
-
 # sort releases by date
 def sort_by_date(comics)
 # input: hash, keys are strings and values are date objects
@@ -51,40 +38,6 @@ def sort_by_date(comics)
 # output: hash, keys are strings sorted by and representing date object, values are an array of strings
 # example: {}
 
-end
-
-
-# format release date for print view
-def month_as_roman(date)
-  puts "#{MONTH_AS_ROM[date.month]} #{date.mday}, #{date.year}\n"
-end
-
-
-# calculate cost
-def total_cost(num_comics)
-  subtotal = num_comics * 2.99
-  tax = num_comics * 0.52
-  total = (subtotal + tax).round(2)
-end
-
-
-# print comics and release dates
-def print_releases(comics, month)
-  num_comics = 0
-  comics.each do |release_date, titles|
-    date_object = format_release_date(release_date)
-    if date_object.mon == month && date_object.year >= Time.now.to_date.year
-      puts release_date
-      titles.each do |title|
-        puts "#{title}"
-        num_comics += 1
-      end
-      puts
-    end
-  end
-  puts "That'll set ya back $#{total_cost(num_comics)}\n\n"
-  puts "-" * 40
-  puts
 end
 
 
@@ -106,14 +59,6 @@ def user_input(comics)
 end
 
 
-def print_list(comics)
-  comics.each do |title, release_date|
-    puts "#{release_date}"
-    puts "#{title}\n\n"
-  end
-end
-
-
 # wrapper method to call all other methods
 def create_calendar(pages)
   my_list = get_titles_and_dates(pages)
@@ -121,5 +66,5 @@ def create_calendar(pages)
 end
 
 
-# Driver code
+# DRIVER CODE
 create_calendar(PAGES)
