@@ -30,7 +30,7 @@ end
 # calculate cost
 def total_cost(num_comics)
   subtotal = num_comics * 2.99
-  tax = num_comics * 0.52
+  tax = num_comics * 0.283
   total = (subtotal + tax).round(2)
 end
 
